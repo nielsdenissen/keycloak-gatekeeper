@@ -356,6 +356,18 @@ func (r *oauthProxy) admissionMiddleware(resource *Resource) func(http.Handler) 
 				return
 			}
 
+			// @step: check if the user is part of a list of allowed users
+			if resource.AllowedUsers != nil && !containedIn(user.name, resource.AllowedUsers) {
+				r.log.Warn("access denied, user not in list of Allowed Users",
+					zap.String("access", "denied"),
+					zap.String("email", user.email),
+					zap.String("resource", resource.URL),
+					zap.String("allowed-users", strings.Join(resource.AllowedUsers, ",")))
+
+				next.ServeHTTP(w, req.WithContext(r.accessForbidden(w, req)))
+				return
+			}
+
 			// step: if we have any claim matching, lets validate the tokens has the claims
 			for claimName, match := range claimMatches {
 				if !r.checkClaim(user, claimName, match, resource.URL) {

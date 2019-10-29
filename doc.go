@@ -149,6 +149,8 @@ type Resource struct {
 	Roles []string `json:"roles" yaml:"roles"`
 	// Groups is a list of groups the user is in
 	Groups []string `json:"groups" yaml:"groups"`
+	// AllowedUsers is a list of users that are allowed access to this url
+	AllowedUsers []string `json:"allowed-users" yaml: "allowed-users"`
 }
 
 // Config is the configuration for the proxy
@@ -186,7 +188,7 @@ type Config struct {
 	// UpstreamCA is the path to a CA certificate in PEM format to validate the upstream certificate
 	UpstreamCA string `json:"upstream-ca" yaml:"upstream-ca" usage:"the path to a file container a CA certificate to validate the upstream tls endpoint"`
 	// Resources is a list of protected resources
-	Resources []*Resource `json:"resources" yaml:"resources" usage:"list of resources 'uri=/admin*|methods=GET,PUT|roles=role1,role2'"`
+	Resources []*Resource `json:"resources" yaml:"resources" usage:"list of resources 'uri=/admin*|methods=GET,PUT|roles=role1,role2|allowed-users=user1,user2'"`
 	// Headers permits adding customs headers across the board
 	Headers map[string]string `json:"headers" yaml:"headers" usage:"custom headers to the upstream request, key=value"`
 	// PreserveHost preserves the host header of the proxied request in the upstream request

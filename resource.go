@@ -36,7 +36,7 @@ func (r *Resource) parse(resource string) (*Resource, error) {
 	for _, x := range strings.Split(resource, "|") {
 		kp := strings.Split(x, "=")
 		if len(kp) != 2 {
-			return nil, errors.New("invalid resource keypair, should be (uri|roles|methods|white-listed)=comma_values")
+			return nil, errors.New("invalid resource keypair, should be (uri|roles|methods|white-listed|allowed-users)=comma_values")
 		}
 		switch kp[0] {
 		case "uri":
@@ -67,8 +67,10 @@ func (r *Resource) parse(resource string) (*Resource, error) {
 				return nil, errors.New("the value of whitelisted must be true|TRUE|T or it's false equivalent")
 			}
 			r.WhiteListed = value
+		case "allowed-users":
+			r.AllowedUsers = strings.Split(kp[1], ",")
 		default:
-			return nil, errors.New("invalid identifier, should be roles, uri or methods")
+			return nil, errors.New("invalid identifier, should be (uri|roles|methods|white-listed|allowed-users)")
 		}
 	}
 
